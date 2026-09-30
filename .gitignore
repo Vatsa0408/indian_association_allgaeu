@@ -27,3 +27,11 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Local tooling / project-specific
+.claude/
+.idea/
+.serena/
+.tokensave/
+CLAUDE.md
+.metadata
