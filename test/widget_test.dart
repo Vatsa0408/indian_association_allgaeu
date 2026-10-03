@@ -1,30 +1,22 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:indian_association_allgaeu/main.dart';
+import 'package:indian_association_allgaeu/app_cubit.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('AppCubit changes screen, lang, theme and event filter', () {
+    final c = AppCubit();
+    expect(c.state.screen, Screen.home);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    c.setScreen(Screen.events);
+    c.setLang('de');
+    c.toggleTheme();
+    c.setEventFilter('past');
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(c.state.screen, Screen.events);
+    expect(c.state.lang, 'de');
+    expect(c.state.theme, ThemeMode.light);
+    // no past events, so the selection stays on the upcoming one
+    expect(c.state.selectedEventId, 'diwali26');
+    c.close();
   });
 }
