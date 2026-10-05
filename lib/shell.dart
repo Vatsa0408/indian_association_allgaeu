@@ -166,6 +166,7 @@ Widget linkButton(
   required Color bg,
   required Color fg,
   required EdgeInsets padding,
+  bool expand = false,
 }) => Box(
   color: bg,
   fg: fg,
@@ -173,7 +174,8 @@ Widget linkButton(
   padding: padding,
   onTap: () => open(url),
   child: Row(
-    mainAxisSize: MainAxisSize.min,
+    mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
     children: [
       const Icon(Icons.open_in_new, size: 18),
       const SizedBox(width: 8),
@@ -432,7 +434,7 @@ Widget _logo(BuildContext context) {
 }
 
 // Keep in sync with `version:` in pubspec.yaml (no package_info_plus dependency).
-const _appVersion = '1.0.0';
+const _appVersion = '1.1.0';
 
 // Opens Flutter's built-in about dialog (includes "View licenses").
 Widget _infoButton(BuildContext context) {

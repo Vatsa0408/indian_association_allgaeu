@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 // Bilingual values are [en, de] pairs; pick with tr().
 String tr(List<String> pair, String lang) => pair[lang == 'de' ? 1 : 0];
 
+// One time slot of an event programme; [items] are bilingual titles shown together.
+class TimelineSlot {
+  final String start, end; // 24h 'HH:mm', same in EN/DE
+  final List<List<String>> items;
+  const TimelineSlot(this.start, this.end, this.items);
+}
+
 class Event {
   final String id, category, status, location;
   final List<String> title, date, desc;
   final String? registerUrl; // Google Forms link, upcoming events only
+  final List<TimelineSlot> timeline; // empty = no programme shown
   const Event(
     this.id,
     this.category,
@@ -16,6 +24,7 @@ class Event {
     this.location,
     this.desc, {
     this.registerUrl,
+    this.timeline = const [],
   });
 }
 
@@ -33,6 +42,27 @@ const events = [
     ],
     // TODO: placeholder, replace with the real Google Forms link
     registerUrl: 'https://forms.gle/2dn4VTgGxJdJe6Vb6',
+    timeline: [
+      TimelineSlot('15:00', '16:00', [
+        ['Fun games for young guests', 'Spiele für junge Gäste'],
+        ['Tea & refreshments', 'Tee & Erfrischungen'],
+      ]),
+      TimelineSlot('16:00', '16:15', [
+        ['Rangoli', 'Rangoli'],
+      ]),
+      TimelineSlot('16:15', '16:30', [
+        ['Diwali Puja', 'Diwali-Puja'],
+      ]),
+      TimelineSlot('16:30', '19:00', [
+        [
+          'Cultural performance: folk & multicultural dances from across India',
+          'Kulturprogramm: Volks- und multikulturelle Tänze aus ganz Indien',
+        ],
+      ]),
+      TimelineSlot('19:00', '20:30', [
+        ['Grand festive dinner', 'Festliches Abendessen'],
+      ]),
+    ],
   ),
 ];
 
@@ -88,7 +118,7 @@ const benefits = [
 ];
 
 const strings = {
-  'appName': ['IAA Allgäu', 'IAA Allgäu'],
+  'appName': ['IAA Kempten', 'IAA Kempten'],
   'navHome': ['Home', 'Start'],
   'navEvents': ['Events', 'Events'],
   'navGallery': ['Gallery', 'Galerie'],
@@ -118,6 +148,7 @@ const strings = {
   'dateLabel': ['Date', 'Datum'],
   'locationLabel': ['Location', 'Ort'],
   'aboutEventHeading': ['About this event', 'Über diese Veranstaltung'],
+  'timelineHeading': ['Programme', 'Programm'],
   'registerCta': [
     'Register for this event',
     'Für diese Veranstaltung anmelden',
