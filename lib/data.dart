@@ -88,7 +88,7 @@ const benefits = [
 ];
 
 const strings = {
-  'appName': ['IAA Allgäu', 'IAA Allgäu'],
+  'appName': ['IAA Kempten', 'IAA Kempten'],
   'navHome': ['Home', 'Start'],
   'navEvents': ['Events', 'Events'],
   'navGallery': ['Gallery', 'Galerie'],

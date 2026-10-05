@@ -1,11 +1,11 @@
 {
-    "name": "indian_association_allgaeu",
-    "short_name": "indian_association_allgaeu",
+    "name": "IAA Kempten",
+    "short_name": "IAA Kempten",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "IAA Kempten - Indian Association Allgäu: events, photos and community.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

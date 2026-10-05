@@ -16,7 +16,7 @@ class App extends StatelessWidget {
     child: BlocBuilder<AppCubit, AppState>(
       buildWhen: (a, b) => a.theme != b.theme,
       builder: (context, s) => MaterialApp(
-        title: 'IAA Allgäu',
+        title: 'IAA Kempten',
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
