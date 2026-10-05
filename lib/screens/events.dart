@@ -119,6 +119,36 @@ class EventsScreen extends StatelessWidget {
             ),
           ],
         );
+        final infoBox = Box(
+          color: cs.surfaceContainer,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          child: Wrap(
+            spacing: 24,
+            runSpacing: 12,
+            children: [
+              info(
+                Icons.calendar_month,
+                context.t('dateLabel'),
+                context.l(sel.date),
+              ),
+              info(Icons.location_on, context.t('locationLabel'), sel.location),
+            ],
+          ),
+        );
+        final register = sel.status == 'upcoming' && sel.registerUrl != null
+            ? linkButton(
+                context,
+                context.t('registerCta'),
+                sel.registerUrl!,
+                bg: cs.primary,
+                fg: cs.onPrimary,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                expand: compact,
+              )
+            : null;
         final detail = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -138,32 +168,20 @@ class EventsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(context.l(sel.title), style: qs(22)),
             const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: Box(
-                color: cs.surfaceContainer,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 14,
-                ),
-                child: Wrap(
-                  spacing: 24,
-                  runSpacing: 12,
-                  children: [
-                    info(
-                      Icons.calendar_month,
-                      context.t('dateLabel'),
-                      context.l(sel.date),
-                    ),
-                    info(
-                      Icons.location_on,
-                      context.t('locationLabel'),
-                      sel.location,
-                    ),
-                  ],
-                ),
+            if (register == null)
+              SizedBox(width: double.infinity, child: infoBox)
+            else if (compact) ...[
+              SizedBox(width: double.infinity, child: infoBox),
+              const SizedBox(height: 12),
+              SizedBox(width: double.infinity, child: register),
+            ] else
+              Row(
+                children: [
+                  Expanded(child: infoBox),
+                  const SizedBox(width: 16),
+                  register,
+                ],
               ),
-            ),
             const SizedBox(height: 18),
             Text(context.t('aboutEventHeading'), style: qs(15)),
             const SizedBox(height: 8),
@@ -175,19 +193,11 @@ class EventsScreen extends StatelessWidget {
                 color: cs.onSurfaceVariant,
               ),
             ),
-            if (sel.status == 'upcoming' && sel.registerUrl != null) ...[
-              const SizedBox(height: 16),
-              linkButton(
-                context,
-                context.t('registerCta'),
-                sel.registerUrl!,
-                bg: cs.primary,
-                fg: cs.onPrimary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-              ),
+            if (sel.timeline.isNotEmpty) ...[
+              const SizedBox(height: 22),
+              Text(context.t('timelineHeading'), style: qs(15)),
+              const SizedBox(height: 12),
+              EventTimeline(sel.timeline),
             ],
           ],
         );
@@ -195,7 +205,8 @@ class EventsScreen extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [left, const SizedBox(height: 24), detail],
+              children: [const SizedBox(height: 24), detail],
+              // children: [left, const SizedBox(height: 24), detail],
             ),
           );
         }
@@ -208,6 +219,105 @@ class EventsScreen extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+// Vertical programme: time column | dot + connector line | title card.
+class EventTimeline extends StatelessWidget {
+  final List<TimelineSlot> slots;
+  const EventTimeline(this.slots, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.cs;
+    return Column(
+      children: [
+        for (var i = 0; i < slots.length; i++)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 56,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      '${slots[i].start}\n${slots[i].end}',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.3,
+                        fontWeight: FontWeight.w600,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 28,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: cs.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      if (i < slots.length - 1)
+                        Expanded(
+                          child: Container(
+                            width: 2,
+                            color: cs.primary.withValues(alpha: 0.35),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: i < slots.length - 1 ? 10 : 0,
+                    ),
+                    child: Box(
+                      color: cs.surfaceContainer,
+                      radius: 16,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final item in slots[i].items)
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: item == slots[i].items.first ? 0 : 6,
+                                ),
+                                child: Text(
+                                  context.l(item),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    height: 1.4,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
